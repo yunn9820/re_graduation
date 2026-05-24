@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>畢業快樂 ✨</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&display=swap">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000000;
+            font-family: 'Noto Serif TC', serif;
+            transition: background-color 2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 手機 RWD 容器 */
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* --- 第一階段：初始播放畫面 --- */
+        .start-screen {
+            position: absolute;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 1s ease, visibility 1s;
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #e6e6e6 0%, #ffffff 50%, #b3b3b3 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), inset 0 2px 4px rgba(255,255,255,0.8);
+            animation: float 3s ease-in-out infinite;
+            margin-bottom: 25px;
+        }
+
+        .play-btn::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 20px solid #555;
+            margin-left: 6px;
+        }
+
+        .dialog-box {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .dialog-box::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid rgba(255, 255, 255, 0.9);
+        }
+
+        /* --- 第二階段：主秀畫面 --- */
+        .main-show {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 2s ease;
+        }
+
+        /* 四周手繪風花草裝飾 */
+        .decorations {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2.5s ease 0.5s;
+        }
+
+        .decor-item {
+            position: absolute;
+            fill: none;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* 影像方框：固定比例，邊緣不超出 */
+        .gallery-wrap {
+            width: 85%;
+            height: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden; /* 確保照片絕不超出方框 */
+            margin-bottom: 40px;
+            z-index: 2;
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 等比例放大填滿方框 */
+            object-position: center 20%; /* 聚焦於中上部分，避免直式照片擋到臉 */
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        /* 字幕排版 */
+        .subtitle-wrap {
+            width: 90%;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .subtitle {
+            font-weight: 500;
+            font-size: 1.25rem;
+            color: #f5f5f7;
+            line-height: 1.6;
+            letter-spacing: 3px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 15px rgba(230, 230, 230, 0.4);
+            opacity: 0;
+            transition: opacity 1s ease;
+            white-space: pre-line; /* 保留分行 */
+        }
+
+        /* --- 第三階段：煙火效果 --- */
+        .fireworks-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 5;
+            display: none;
+        }
+
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: explode 1.5s ease-out infinite;
+        }
+
+        /* 動畫效果定義 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0) scale(1);
+                box-shadow: 0 0 0 0 rgba(255,255,255,0);
+            }
+            50% {
+                box-shadow: 
+                    -40px -40px 0 2px #fff, 40px -40px 0 2px #fff,
+                    -60px 20px 0 2px #e6e6e6, 60px 20px 0 2px #e6e6e6,
+                    0px -70px 0 2px #b3b3b3, 0px 70px 0 2px #fff,
+                    -30px 50px 0 2px #b3b3b3, 30px 50px 0 2px #e6e6e6;
+                opacity: 1;
+            }
+            100% {
+                transform: translate(0, 20px) scale(0.5);
+                box-shadow: 
+                    -60px -60px 0 0px rgba(255,255,255,0), 60px -60px 0 0px rgba(255,255,255,0),
+                    -90px 30px 0 0px rgba(255,255,255,0), 90px 30px 0 0px rgba(255,255,255,0),
+                    0px -100px 0 0px rgba(255,255,255,0), 0px 100px 0 0px rgba(255,255,255,0),
+                    -45px 75px 0 0px rgba(255,255,255,0), 45px 75px 0 0px rgba(255,255,255,0);
+                opacity: 0;
+            }
+        }
+
+        .show-active {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="start-screen" id="startScreen" onclick="startExperience()">
+            <div class="play-btn"></div>
+            <div class="dialog-box">點擊開始</div>
+        </div>
+
+        <div class="main-show" id="mainShow">
+            <svg class="decorations" id="decorations" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path class="decor-item" stroke="#FBE251" d="M 0,20 C 10,15 15,5 25,10 C 20,25 10,20 0,20 M 0,0 C 5,15 15,15 10,30" />
+                <path class="decor-item" stroke="#F0A086" d="M 100,15 C 90,20 85,10 80,0 C 90,5 95,15 100,15 M 95,0 C 90,10 95,20 85,25" />
+                <path class="decor-item" stroke="#CAAD5F" d="M 0,85 C 15,80 10,95 20,100 M 0,95 C 8,92 12,98 15,100" />
+                <path class="decor-item" stroke="#FBE251" d="M 100,80 C 85,85 90,95 80,100 M 90,100 C 95,90 100,92 100,92" />
+            </svg>
+
+            <div class="gallery-wrap">
+                <img src="" id="galleryImg" class="gallery-img" alt="Memory">
+            </div>
+
+            <div class="subtitle-wrap">
+                <div id="subtitle" class="subtitle"></div>
+            </div>
+        </div>
+
+        <div class="fireworks-container" id="fireworksContainer">
+            <div class="firework" style="top: 30%; left: 30%; animation-delay: 0s;"></div>
+            <div class="firework" style="top: 20%; left: 70%; animation-delay: 0.4s;"></div>
+            <div class="firework" style="top: 50%; left: 50%; animation-delay: 0.2s;"></div>
+        </div>
+    </div>
+
+    <script>
+        const playlist = [
+            { img: 'IMG_4308.JPG', text: '這是我跟你們的第一次見面' },
+            { img: 'IMG_4309.JPG', text: '那時候就覺得你們都好漂亮好好玩（？）\n好想跟你們變熟' }, // 依要求精準分行
+            { img: 'IMG_4276.JPG', text: '還好後來大二人資課因為問你們好多問題\n然後就一直有在聊天', duration: 3000 },
+            { img: 'IMG_4276.JPG', text: '謝謝管營，謝謝人資😭😭嘗' },
+            { img: 'IMG_8655.HEIC', text: '好快就到專題ㄌ', duration: 3000 },
+            { img: 'IMG_8696.HEIC', text: '感覺剛認識你們不久，\n結果你們就要畢業啦😭🎓', duration: 3000 },
+            { img: 'IMG_8699.HEIC', text: '你們一定會在各自的道路上\n繼續閃閃發光✨', duration: 3000 },
+            { img: 'IMG_8704.HEIC', text: '不論是研究所還是職場', duration: 3000 },
+            { img: 'IMG_8710.HEIC', text: '但要吃飽睡好！！！\n身體健康最重要🫶🏻💝', duration: 3000 },
+            { img: 'IMG_8710.HEIC', text: '祝你們畢業快樂🎊\n我會很想很想你們', duration: 4000 }
+        ];
+
+        let currentIndex = 0;
+        const body = document.body;
+        const startScreen = document.getElementById('startScreen');
+        const mainShow = document.getElementById('mainShow');
+        const decorations = document.getElementById('decorations');
+        const galleryImg = document.getElementById('galleryImg');
+        const subtitle = document.getElementById('subtitle');
+        const fireworksContainer = document.getElementById('fireworksContainer');
+
+        function startExperience() {
+            startScreen.style.opacity = '0';
+            startScreen.style.visibility = 'hidden';
+
+            // 底色改成指定色 #577C8A
+            body.style.backgroundColor = '#577C8A';
+
+            setTimeout(() => {
+                mainShow.classList.add('show-active');
+                decorations.style.opacity = '1';
+                playSequence();
+            }, 1000);
+        }
+
+        function playSequence() {
+            if (currentIndex >= playlist.length) {
+                // 播放結束：觸發背景變暗與煙火
+                endExperience();
+                return;
+            }
+
+            const currentItem = playlist[currentIndex];
+            
+            galleryImg.src = currentItem.img;
+            subtitle.innerText = currentItem.text;
+
+            // 調整 IMG_8696.HEIC 和 IMG_8710.HEIC 的顯示位置
+            if (currentItem.img === 'IMG_8696.HEIC' || currentItem.img === 'IMG_8710.HEIC') {
+                galleryImg.style.objectPosition = '50% 70%'; // 往下移動 20%
+            } else {
+                galleryImg.style.objectPosition = 'center 20%'; // 預設位置
+            }
+
+            galleryImg.style.opacity = '1';
+            subtitle.style.opacity = '1';
+
+            let displayTime = currentItem.duration || 4000;
+
+            setTimeout(() => {
+                const nextItem = playlist[currentIndex + 1];
+                if (!nextItem || nextItem.img !== currentItem.img) {
+                    galleryImg.style.opacity = '0';
+                }
+                subtitle.style.opacity = '0';
+
+                setTimeout(() => {
+                    currentIndex++;
+                    playSequence();
+                }, 1000);
+
+            }, displayTime);
+        }
+
+        function endExperience() {
+            // 1. 隱藏影像與花草
+            galleryImg.style.opacity = '0';
+            decorations.style.opacity = '0';
+            
+            // 2. 背景慢慢變暗（花 2 秒回到全黑）
+            body.style.backgroundColor = '#000000';
+
+            // 3. 變暗後施放 3 秒煙火
+            setTimeout(() => {
+                fireworksContainer.style.display = 'block';
+                
+                // 3 秒後煙火消失
+                setTimeout(() => {
+                    fireworksContainer.style.display = 'none';
+                }, 3000);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
