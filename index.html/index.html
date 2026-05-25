@@ -82,6 +82,7 @@
             letter-spacing: 2px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             position: relative;
+            transition: all 0.3s ease;
         }
 
         .dialog-box::before {
@@ -138,7 +139,7 @@
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow: hidden; /* 確保照片絕不超出方框 */
+            overflow: hidden; 
             margin-bottom: 40px;
             z-index: 2;
         }
@@ -146,8 +147,8 @@
         .gallery-img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 等比例放大填滿方框 */
-            object-position: center 20%; /* 聚焦於中上部分，避免直式照片擋到臉 */
+            object-fit: cover; 
+            object-position: center 20%; 
             opacity: 0;
             transition: opacity 0.8s ease;
         }
@@ -172,10 +173,10 @@
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 15px rgba(230, 230, 230, 0.4);
             opacity: 0;
             transition: opacity 1s ease;
-            white-space: pre-line; /* 保留分行 */
+            white-space: pre-line; 
         }
 
-        /* --- 第三階段：煙火效果 --- */
+        /* --- 第三階段：煙火特效容器 --- */
         .fireworks-container {
             position: absolute;
             width: 100%;
@@ -185,14 +186,38 @@
             pointer-events: none;
             z-index: 5;
             display: none;
+            overflow: hidden;
         }
 
-        .firework {
+        .firework-particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
-            animation: explode 1.5s ease-out infinite;
+            opacity: 0;
+        }
+
+        /* 中置呈現：畢業快樂 */
+        .final-title-wrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 6;
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            display: none;
+            transition: opacity 1.5s ease;
+        }
+
+        .final-title {
+            font-family: 'Noto Serif TC', serif;
+            font-weight: 700; 
+            font-size: 2.5rem;
+            color: #ffffff;
+            letter-spacing: 6px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.4);
         }
 
         /* 動畫效果定義 */
@@ -202,26 +227,32 @@
             100% { transform: translateY(0px); }
         }
 
-        @keyframes explode {
+        @keyframes explodeFirework {
             0% {
                 transform: translate(0, 0) scale(1);
                 box-shadow: 0 0 0 0 rgba(255,255,255,0);
+                opacity: 0;
             }
-            50% {
+            10% {
+                opacity: 1;
+            }
+            60% {
                 box-shadow: 
-                    -40px -40px 0 2px #fff, 40px -40px 0 2px #fff,
-                    -60px 20px 0 2px #e6e6e6, 60px 20px 0 2px #e6e6e6,
-                    0px -70px 0 2px #b3b3b3, 0px 70px 0 2px #fff,
-                    -30px 50px 0 2px #b3b3b3, 30px 50px 0 2px #e6e6e6;
+                    -50px -50px 0 1px var(--color), 50px -50px 0 1px var(--color),
+                    -70px 20px 0 1px var(--color), 70px 20px 0 1px var(--color),
+                    0px -80px 0 1.5px #ffffff, 0px 80px 0 1.5px #ffffff,
+                    -35px 60px 0 1px var(--color), 35px 60px 0 1px var(--color),
+                    -20px -70px 0 1px var(--color), 20px -70px 0 1px var(--color),
+                    -60px -20px 0 1px var(--color), 60px -20px 0 1px var(--color);
                 opacity: 1;
             }
             100% {
-                transform: translate(0, 20px) scale(0.5);
+                transform: translate(0, 30px) scale(0.4);
                 box-shadow: 
-                    -60px -60px 0 0px rgba(255,255,255,0), 60px -60px 0 0px rgba(255,255,255,0),
-                    -90px 30px 0 0px rgba(255,255,255,0), 90px 30px 0 0px rgba(255,255,255,0),
-                    0px -100px 0 0px rgba(255,255,255,0), 0px 100px 0 0px rgba(255,255,255,0),
-                    -45px 75px 0 0px rgba(255,255,255,0), 45px 75px 0 0px rgba(255,255,255,0);
+                    -70px -70px 0 0px rgba(255,255,255,0), 70px -70px 0 0px rgba(255,255,255,0),
+                    -95px 25px 0 0px rgba(255,255,255,0), 95px 25px 0 0px rgba(255,255,255,0),
+                    0px -110px 0 0px rgba(255,255,255,0), 0px 110px 0 0px rgba(255,255,255,0),
+                    -45px 85px 0 0px rgba(255,255,255,0), 45px 85px 0 0px rgba(255,255,255,0);
                 opacity: 0;
             }
         }
@@ -235,9 +266,9 @@
 <body>
 
     <div class="container">
-        <div class="start-screen" id="startScreen" onclick="startExperience()">
+        <div class="start-screen" id="startScreen" onclick="handleStartClick()">
             <div class="play-btn"></div>
-            <div class="dialog-box">點擊開始</div>
+            <div class="dialog-box" id="startText">點擊開始</div>
         </div>
 
         <div class="main-show" id="mainShow">
@@ -257,41 +288,85 @@
             </div>
         </div>
 
-        <div class="fireworks-container" id="fireworksContainer">
-            <div class="firework" style="top: 30%; left: 30%; animation-delay: 0s;"></div>
-            <div class="firework" style="top: 20%; left: 70%; animation-delay: 0.4s;"></div>
-            <div class="firework" style="top: 50%; left: 50%; animation-delay: 0.2s;"></div>
+        <div class="fireworks-container" id="fireworksContainer"></div>
+
+        <div class="final-title-wrap" id="finalTitleWrap">
+            < h1 class="final-title">畢業快樂</h1>
         </div>
     </div>
 
     <script>
         const playlist = [
-            { img: 'IMG_4308.JPG', text: '這是我跟你們的第一次見面' },
-            { img: 'IMG_4309.JPG', text: '那時候就覺得你們都好漂亮好好玩（？）\n好想跟你們變熟' }, // 依要求精準分行
+            { img: 'IMG_4308.JPG', text: '這幕是我跟你們的第一次見面' },
+            { img: 'IMG_4309.JPG', text: '那時候就覺得你們都好漂亮好好玩（？）\n好想跟你們變熟' }, 
             { img: 'IMG_4276.JPG', text: '還好後來大二人資課因為問你們好多問題\n然後就一直有在聊天', duration: 3000 },
-            { img: 'IMG_4276.JPG', text: '謝謝管營，謝謝人資😭😭' },
+            { img: 'IMG_4276.JPG', text: '謝謝管營，謝謝人資😭😭😭' },
             { img: 'IMG_8655.HEIC', text: '好快就到專題ㄌ', duration: 3000 },
             { img: 'IMG_8696.HEIC', text: '感覺剛認識你們不久，\n結果你們就要畢業啦😭🎓', duration: 3000 },
             { img: 'IMG_8699.HEIC', text: '你們一定會在各自的道路上\n繼續閃閃發光✨', duration: 3000 },
             { img: 'IMG_8704.HEIC', text: '不論是研究所還是職場', duration: 3000 },
-            { img: 'IMG_8710.HEIC', text: '但要吃飽睡好！！！\n身體健康最重要🫶🏻💝', duration: 3000 },
+            { img: 'IMG_8710.HEIC', text: '但要吃飽睡好！！！\n身體健康最重要🫶1💝', duration: 3000 },
             { img: 'IMG_8710.HEIC', text: '祝你們畢業快樂🎊\n我會很想很想你們', duration: 4000 }
         ];
+
+        // 提取所有不重複的圖片網址清單，用來進行預載入
+        const uniqueImages = [...new Set(playlist.map(item => item.img))];
+        let loadedCount = 0;
+        let isImagesPreloaded = false;
+        let hasClicked = false;
 
         let currentIndex = 0;
         const body = document.body;
         const startScreen = document.getElementById('startScreen');
+        const startText = document.getElementById('startText');
         const mainShow = document.getElementById('mainShow');
         const decorations = document.getElementById('decorations');
         const galleryImg = document.getElementById('galleryImg');
         const subtitle = document.getElementById('subtitle');
         const fireworksContainer = document.getElementById('fireworksContainer');
+        const finalTitleWrap = document.getElementById('finalTitleWrap');
 
-        function startExperience() {
+        // 網頁一開就偷偷在背景載入圖片
+        uniqueImages.forEach(src => {
+            const img = new Image();
+            img.src = src;
+            img.onload = () => {
+                loadedCount++;
+                if (loadedCount === uniqueImages.length) {
+                    isImagesPreloaded = true;
+                    // 如果使用者已經點擊了，但剛剛在等圖片，現在就立刻開始
+                    if (hasClicked) {
+                        runExperience();
+                    }
+                }
+            };
+            img.onerror = () => {
+                // 防錯：即使某張圖抓不到也算完成，避免網頁完全卡死
+                loadedCount++;
+                if (loadedCount === uniqueImages.length) {
+                    isImagesPreloaded = true;
+                    if (hasClicked) runExperience();
+                }
+            };
+        });
+
+        function handleStartClick() {
+            if (hasClicked) return;
+            hasClicked = true;
+
+            if (isImagesPreloaded) {
+                // 如果照片早就下載完了，直接無縫開始
+                runExperience();
+            } else {
+                // 如果手機網路太慢還沒載完，把按鈕文字變成 Loading... 提示，等載完自動觸發
+                startText.innerText = "Loading...";
+                startText.style.letterSpacing = "0px";
+            }
+        }
+
+        function runExperience() {
             startScreen.style.opacity = '0';
             startScreen.style.visibility = 'hidden';
-
-            // 底色改成指定色 #577C8A
             body.style.backgroundColor = '#577C8A';
 
             setTimeout(() => {
@@ -303,7 +378,6 @@
 
         function playSequence() {
             if (currentIndex >= playlist.length) {
-                // 播放結束：觸發背景變暗與煙火
                 endExperience();
                 return;
             }
@@ -313,11 +387,10 @@
             galleryImg.src = currentItem.img;
             subtitle.innerText = currentItem.text;
 
-            // 調整 IMG_8696.HEIC 和 IMG_8710.HEIC 的顯示位置
             if (currentItem.img === 'IMG_8696.HEIC' || currentItem.img === 'IMG_8710.HEIC') {
-                galleryImg.style.objectPosition = '50% 70%'; // 往下移動 20%
+                galleryImg.style.objectPosition = '50% 70%'; 
             } else {
-                galleryImg.style.objectPosition = 'center 20%'; // 預設位置
+                galleryImg.style.objectPosition = 'center 20%'; 
             }
 
             galleryImg.style.opacity = '1';
@@ -341,22 +414,49 @@
         }
 
         function endExperience() {
-            // 1. 隱藏影像與花草
             galleryImg.style.opacity = '0';
+            subtitle.style.opacity = '0';
             decorations.style.opacity = '0';
             
-            // 2. 背景慢慢變暗（花 2 秒回到全黑）
             body.style.backgroundColor = '#000000';
 
-            // 3. 變暗後施放 3 秒煙火
             setTimeout(() => {
                 fireworksContainer.style.display = 'block';
-                
-                // 3 秒後煙火消失
+                createFireworks();
+
+                finalTitleWrap.style.display = 'block';
+                setTimeout(() => {
+                    finalTitleWrap.style.opacity = '1';
+                }, 100);
+
                 setTimeout(() => {
                     fireworksContainer.style.display = 'none';
-                }, 3000);
+                    fireworksContainer.innerHTML = '';
+                }, 3000); 
+
             }, 2000);
+        }
+
+        function createFireworks() {
+            const fireworkCount = 6; 
+            const colors = ['#e6e6e6', '#ffffff', '#FBE251', '#F0A086', '#CAAD5F']; 
+            
+            for (let i = 0; i < fireworkCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('firework-particle');
+                
+                const topPos = Math.random() * 50 + 15;   
+                const leftPos = Math.random() * 70 + 15;  
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                const delay = (i * 0.4) + 's';           
+
+                particle.style.top = topPos + '%';
+                particle.style.left = leftPos + '%';
+                particle.style.setProperty('--color', randomColor);
+                particle.style.animation = `explodeFirework 1.5s ease-out ${delay} forwards`;
+
+                fireworksContainer.appendChild(particle);
+            }
         }
     </script>
 </body>
