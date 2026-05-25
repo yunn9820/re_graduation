@@ -205,21 +205,21 @@
             transform: translate(-50%, -50%);
             z-index: 6;
             text-align: center;
-            width: 90%; /* 留邊避免手機螢幕太窄時字體擠壓 */
+            width: 90%; 
             opacity: 0;
             display: none;
-            transition: opacity 1.5s ease;
+            transition: opacity 2.5s ease-out; /* 延長淡出時間，讓結尾變暗更溫柔 */
         }
 
         .final-title {
             font-family: 'Noto Serif TC', serif;
             font-weight: 700; 
-            font-size: 2.2rem; /* 稍微微調字級大小，確保手機排版美觀不擠壓 */
+            font-size: 2.2rem; 
             color: #ffffff;
             line-height: 1.5;
             letter-spacing: 4px;
             text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.4);
-            white-space: pre-line; /* 支援文字視手機寬度自動換行 */
+            white-space: pre-line; 
         }
 
         /* 動畫效果定義 */
@@ -301,13 +301,13 @@
         const playlist = [
             { img: 'IMG_4308.JPG', text: '這是我跟妳們的第一次見面' },
             { img: 'IMG_4309.JPG', text: '那時候就覺得你們都好漂亮！！\n好想跟你們變熟' }, 
-            { img: 'IMG_4276.JPG', text: '後來大二人資課因為問你們好多問題\n一直有在聊天', duration: 3000 },
+            { img: 'IMG_4276.JPG', text: '後來大二人資課問妳們好多問題\n陸陸續續一直有在聊天', duration: 3000 },
             { img: 'IMG_4276.JPG', text: '謝謝管營，謝謝人資\n讓我認識這麼好的學姊' },
             { img: 'IMG_8655.HEIC', text: '好快就到專題ㄌ', duration: 3000 },
             { img: 'IMG_8696.HEIC', text: '感覺才剛認識不久，\n結果妳們就要畢業啦😭🎓', duration: 3000 },
             { img: 'IMG_8699.HEIC', text: '妳們一定會在各自的道路上\n繼續閃閃發光✨', duration: 3000 },
             { img: 'IMG_8704.HEIC', text: '不論在研究所還是職場', duration: 3000 },
-            { img: 'IMG_8710.HEIC', text: '但要吃飽睡好！！！\n身體健康最重要🫶🏻💝', duration: 3000 },
+            { img: 'IMG_8710.HEIC', text: '但要吃飽睡好！！！\n身體健康最重要🫶1💝', duration: 3000 },
             { img: 'IMG_8710.HEIC', text: '祝妳們畢業快樂🎊\n我會很想很想妳們', duration: 4000 }
         ];
 
@@ -415,17 +415,26 @@
             body.style.backgroundColor = '#000000';
 
             setTimeout(() => {
+                // 1. 開放煙火
                 fireworksContainer.style.display = 'block';
                 createFireworks();
 
+                // 2. 漸漸顯現置中大字
                 finalTitleWrap.style.display = 'block';
                 setTimeout(() => {
                     finalTitleWrap.style.opacity = '1';
                 }, 100);
 
+                // 3. 煙火放完後（3秒），讓大字與殘留效果花 2.5 秒慢慢淡出變暗，完美落幕
                 setTimeout(() => {
-                    fireworksContainer.style.display = 'none';
-                    fireworksContainer.innerHTML = '';
+                    finalTitleWrap.style.opacity = '0'; // 文字漸漸變暗
+
+                    setTimeout(() => {
+                        fireworksContainer.style.display = 'none';
+                        fireworksContainer.innerHTML = '';
+                        finalTitleWrap.style.display = 'none';
+                    }, 2500); // 留 2.5 秒給文字完全變黑
+                    
                 }, 3000); 
 
             }, 2000);
