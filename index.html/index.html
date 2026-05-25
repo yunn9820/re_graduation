@@ -291,7 +291,7 @@
         <div class="fireworks-container" id="fireworksContainer"></div>
 
         <div class="final-title-wrap" id="finalTitleWrap">
-            < h1 class="final-title">畢業快樂</h1>
+            <h1 class="final-title">畢業快樂</h1>
         </div>
     </div>
 
@@ -302,14 +302,13 @@
             { img: 'IMG_4276.JPG', text: '還好後來大二人資課因為問你們好多問題\n然後就一直有在聊天', duration: 3000 },
             { img: 'IMG_4276.JPG', text: '謝謝管營，謝謝人資😭😭😭' },
             { img: 'IMG_8655.HEIC', text: '好快就到專題ㄌ', duration: 3000 },
-            { img: 'IMG_8696.HEIC', text: '感覺剛認識你們不久，\n結果你們就要畢業啦😭🎓', duration: 3000 },
+            { img: 'IMG_8696.HEIC', text: '感覺剛認識你們久，\n結果你們就要畢業啦😭🎓', duration: 3000 },
             { img: 'IMG_8699.HEIC', text: '你們一定會在各自的道路上\n繼續閃閃發光✨', duration: 3000 },
             { img: 'IMG_8704.HEIC', text: '不論是研究所還是職場', duration: 3000 },
-            { img: 'IMG_8710.HEIC', text: '但要吃飽睡好！！！\n身體健康最重要🫶1💝', duration: 3000 },
+            { img: 'IMG_8710.HEIC', text: '但要吃飽睡好！！！\n身體健康最重要🫶🏻💝', duration: 3000 },
             { img: 'IMG_8710.HEIC', text: '祝你們畢業快樂🎊\n我會很想很想你們', duration: 4000 }
         ];
 
-        // 提取所有不重複的圖片網址清單，用來進行預載入
         const uniqueImages = [...new Set(playlist.map(item => item.img))];
         let loadedCount = 0;
         let isImagesPreloaded = false;
@@ -326,7 +325,6 @@
         const fireworksContainer = document.getElementById('fireworksContainer');
         const finalTitleWrap = document.getElementById('finalTitleWrap');
 
-        // 網頁一開就偷偷在背景載入圖片
         uniqueImages.forEach(src => {
             const img = new Image();
             img.src = src;
@@ -334,14 +332,10 @@
                 loadedCount++;
                 if (loadedCount === uniqueImages.length) {
                     isImagesPreloaded = true;
-                    // 如果使用者已經點擊了，但剛剛在等圖片，現在就立刻開始
-                    if (hasClicked) {
-                        runExperience();
-                    }
+                    if (hasClicked) runExperience();
                 }
             };
             img.onerror = () => {
-                // 防錯：即使某張圖抓不到也算完成，避免網頁完全卡死
                 loadedCount++;
                 if (loadedCount === uniqueImages.length) {
                     isImagesPreloaded = true;
@@ -355,10 +349,8 @@
             hasClicked = true;
 
             if (isImagesPreloaded) {
-                // 如果照片早就下載完了，直接無縫開始
                 runExperience();
             } else {
-                // 如果手機網路太慢還沒載完，把按鈕文字變成 Loading... 提示，等載完自動觸發
                 startText.innerText = "Loading...";
                 startText.style.letterSpacing = "0px";
             }
